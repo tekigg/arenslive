@@ -51,16 +51,17 @@ const Socials: React.FC<{ streamerId: string }> = ({ streamerId }) => {
     return <div>Failed to load social links</div>;
   }
 
+  const socialData = data as unknown as dataTypes[];
 return (
     <div>
-        {data[0]?.socials?.map((social, index) => (
+        {socialData[0].socials?.map((social, index) => (
             <a
                 key={index}
                 href={social.url}
                 target="_blank"
                 className="text-white/30 font-sans hover:text-white/100 transition-all"
             >
-                {social.name}{index !== data[0]?.socials?.length - 1 && <span className="mx-1 text-white/50">•</span>}
+                {social.name}{index !== socialData[0].socials?.length - 1 && <span className="mx-1 text-white/50">•</span>}
             </a>
         ))}
     </div>
