@@ -55,6 +55,7 @@ return (
     <div>
         {data[0]?.socials?.map((social, index) => (
             <a
+                key={index}
                 href={social.url}
                 target="_blank"
                 className="text-white/30 font-sans hover:text-white/100 transition-all"
