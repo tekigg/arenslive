@@ -1,2 +1,2 @@
-# arenslive
-Official website for https://arens.live
+
+## Official website for ArensLiveSMP
