@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import Streamers from '@/app/streamers.json';
 
 const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID;
 const TWITCH_CLIENT_SECRET = process.env.TWITCH_CLIENT_SECRET;
@@ -11,9 +12,7 @@ function getBaseUrl() {
 
 export async function GET() {
   try {
-    // Fetch streamers list from the JSON file
-    const streamersResponse = await fetch(`${getBaseUrl()}/assets/data/streamers.json` , { next: { revalidate: 10 }, headers: {Accept: 'application/json'} });
-    const streamers = await streamersResponse.json();
+    const streamers = Streamers
 
     // Get OAuth token
     const tokenResponse = await fetch(`https://id.twitch.tv/oauth2/token?client_id=${TWITCH_CLIENT_ID}&client_secret=${TWITCH_CLIENT_SECRET}&grant_type=client_credentials`, {
