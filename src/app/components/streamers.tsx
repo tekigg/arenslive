@@ -118,18 +118,18 @@ const Streamers: React.FC<StreamersProps> = ({ streamers }) => {
                 <motion.img
                   src={selectedStreamer.profilePictureUrl}
                   alt={selectedStreamer.displayName}
-                  className="h-96 lg:h-64 mt-24 aspect-square bg-white rounded-full overflow-hidden outline-8 outline-[#a088e2] outline outline-offset-4"
+                  className="h-96 lg:h-52 mt-24 aspect-square bg-white rounded-full overflow-hidden outline-8 outline-[#a088e2] outline outline-offset-4"
                 />
               </motion.div>
             </div>
-            <div className="w-full  h-full p-10">
+            <div className="w-full  h-full p-10 lg:p-4">
               <motion.div
                 initial={{ x: "100%", opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.3, ease: [0, 0.71, 0.2, 1.01] }}
-                className="bg-[#161616] flex flex-col gap-8 items-center justify-end h-full w-full rounded-xl z-40 p-8"
+                className="bg-[#161616] flex flex-col gap-8 items-center justify-end lg:justify-start h-full w-full rounded-xl z-40 p-8 lg:p-4"
               >
-                <div className="basis-1/4 w-full items-end flex flex-col">
+                <div className="basis-1/4 w-full items-end lg:items-start flex flex-col">
                     <div className="w-full aspect-video rounded-xl bg-black overflow-hidden">
                       <iframe
                         src={"https://player.twitch.tv/?channel=" + selectedStreamer.displayName + "&parent=smp.arens.live&parent=localhost&parent=arenslive.vercel.app"}
@@ -144,7 +144,7 @@ const Streamers: React.FC<StreamersProps> = ({ streamers }) => {
                     
                     </div>
                 </div>
-                <div className="basis-1/6 flex items-end">
+                <div className="basis-1/6 flex items-end p-2">
                     <Socials streamerId={selectedStreamer.displayName} />
                 </div>
               </motion.div>

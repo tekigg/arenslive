@@ -62,7 +62,7 @@ export async function POST(request: Request) {
         });
 
         const data = await response.json();
-
+        
         // Add null checks and provide default values
         const socials =
           data[0]?.data?.user?.channel?.socialMedias?.map(
@@ -71,12 +71,13 @@ export async function POST(request: Request) {
               name: x.name,
             })
           ) || [];
-        console.log(results, data, response, homeData, clientId, url, payload);
 
         return { streamerId, socials };
       })
     );
     return NextResponse.json(results);
+    
+
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(

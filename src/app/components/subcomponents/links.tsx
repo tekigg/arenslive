@@ -48,12 +48,12 @@ const Socials: React.FC<{ streamerId: string }> = ({ streamerId }) => {
 
   if (error) {
     console.error("Error fetching streamer links:", error);
-    return <div>Failed to load social links</div>;
+    return <div>Failed to load social links :(</div>;
   }
 
   const socialData = data as unknown as dataTypes[];
 return (
-    <div>
+    <div className="flex flex-wrap items-center justify-center">
         {socialData[0].socials?.map((social, index) => (
             <a
                 key={index}
