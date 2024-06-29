@@ -47,9 +47,29 @@ const itemVariants = {
   },
 };
 
+const OfflineStreamer: React.FC<StreamerInfo> = (streamer) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+
+  return (
+    <motion.div
+      className="w-screen h-full text-white flex flex-wrap gap-8 px-6 items-center justify-center"
+      ref={ref}
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{
+        duration: 0.8,
+        delay: 0.5,
+        ease: [0, 0.71, 0.2, 1.01],
+      }}
+    >
+      <Creator {...streamer} />
+    </motion.div>
+  );
+};
+
 const Streamers: React.FC<StreamersProps> = ({ streamers }) => {
   const controls = useAnimation();
-
   const [selectedStreamer, setSelectedStreamer] = useState<StreamerInfo | null>(
     null
   );
@@ -59,13 +79,23 @@ const Streamers: React.FC<StreamersProps> = ({ streamers }) => {
       controls.start("visible");
     }
     selectedStreamer ? controls.start("hidden") : controls.start("visible");
-  }, [controls, selectedStreamer]);
-  const nonActiveStreamers = streamers.filter((streamer) => !streamer.isLive);
+  }, [controls, selectedStreamer, streamers]);
 
   if (!streamers) {
     return <div>No streamers</div>;
   }
+
   const activeStreamers = streamers.filter((streamer) => streamer.isLive);
+  const nonActiveStreamers = streamers.filter((streamer) => !streamer.isLive);
+
+  const handleSelectStreamer = (streamer: StreamerInfo) => {
+    setSelectedStreamer(streamer);
+  };
+
+  const handleCloseSelected = () => {
+    setSelectedStreamer(null);
+  };
+
   if (activeStreamers.length === 0) {
     return (
       <>
@@ -101,40 +131,14 @@ const Streamers: React.FC<StreamersProps> = ({ streamers }) => {
                 creators
               </p>
             </motion.div>
-            {nonActiveStreamers.map((streamer, index) => {
-              const ref = useRef(null);
-              const isInView = useInView(ref, { once: true });
-
-              return (
-                <motion.div
-                  className="w-screen h-full text-white flex flex-wrap gap-8 px-6 items-center justify-center"
-                  ref={ref}
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{
-                    duration: 0.8,
-                    delay: index <= 7 && isInView ? index * 0.1 : 0.5,
-                    ease: [0, 0.71, 0.2, 1.01],
-                  }}
-                >
-                  <Creator {...streamer} />
-                </motion.div>
-              );
-            })}
+            {nonActiveStreamers.map((streamer, index) => (
+              <OfflineStreamer key={streamer.displayName} {...streamer} />
+            ))}
           </motion.div>
         </div>
       </>
     );
   }
-
-  const handleSelectStreamer = (streamer: StreamerInfo) => {
-    setSelectedStreamer(streamer);
-  };
-
-  const handleCloseSelected = () => {
-    setSelectedStreamer(null);
-  };
 
   return (
     <>
@@ -258,27 +262,9 @@ const Streamers: React.FC<StreamersProps> = ({ streamers }) => {
               creators
             </p>
           </motion.div>
-          {nonActiveStreamers.map((streamer, index) => {
-            const ref = useRef(null);
-            const isInView = useInView(ref, { once: true });
-
-            return (
-              <motion.div
-                className="w-screen h-full text-white flex flex-wrap gap-8 px-6 items-center justify-center"
-                ref={ref}
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{
-                  duration: 0.8,
-                  delay: index <= 7 && isInView ? index * 0.1 : 0.5,
-                  ease: [0, 0.71, 0.2, 1.01],
-                }}
-              >
-                <Creator {...streamer} />
-              </motion.div>
-            );
-          })}
+          {nonActiveStreamers.map((streamer) => (
+            <OfflineStreamer key={streamer.displayName} {...streamer} />
+          ))}
         </motion.div>
       </div>
     </>
