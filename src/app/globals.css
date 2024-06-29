@@ -35,3 +35,43 @@ body {
     text-wrap: balance;
   }
 }
+
+@keyframes flicker {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 0; }
+}
+
+.animate-flicker {
+  animation: flicker 300ms ease-in-out;
+}
+
+#tsparticles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  padding: 0;
+  margin: 0;
+  z-index: 0; /* if you use -1 you have to set to `"window"` the interactivity.detectsOn property */
+}
+
+canvas {
+  height: 100% !important;
+  bottom: 100% !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in-element {
+  opacity: 0;
+  animation: fadeIn 1s ease-in-out 1s forwards;
+}
+
+#tsparticles {
+  opacity: 0;
+  animation: fadeIn 1s ease-in-out 3s forwards;
+}

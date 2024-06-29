@@ -1,129 +1,115 @@
 "use client";
 
-import React, { useEffect, useState, useCallback, useRef } from "react";
-
-interface Firefly {
-  id: number;
-  x: number;
-  y: number;
-}
-
-interface FireflyProps {
-  initialX: number;
-  initialY: number;
-  delay: number;
-  containerWidth: number;
-  containerHeight: number;
-}
+import { useEffect, useMemo, useState } from "react";
+import type { Container, Engine, ISourceOptions } from "@tsparticles/engine";
+import { MoveDirection, OutMode } from "@tsparticles/engine";
+import Particles, { initParticlesEngine } from "@tsparticles/react";
+import { loadFull } from "tsparticles";
+import type { IRepulse } from "@tsparticles/interaction-external-repulse";
+import {
+  loadExternalRepulseInteraction,
+  Repulse,
+} from "@tsparticles/interaction-external-repulse";
 
 const FireflyAnimation: React.FC = () => {
-  const [fireflies, setFireflies] = useState<Firefly[]>([]);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
-
-  const generateFireflies = useCallback(() => {
-    if (containerRef.current) {
-      const { width, height } = containerRef.current.getBoundingClientRect();
-      setContainerSize({ width, height });
-      const newFireflies: Firefly[] = Array.from({ length: 20 }, (_, i) => ({
-        id: i,
-        x: Math.random() * width,
-        y: Math.random() * height,
-      }));
-      setFireflies(newFireflies);
-    }
+  const [init, setInit] = useState(false);
+  useEffect(() => {
+    initParticlesEngine(async (engine) => {
+      await loadFull(engine);
+      await loadExternalRepulseInteraction(engine);
+    }).then(() => {
+      setInit(true);
+    });
   }, []);
 
-  useEffect(() => {
-    generateFireflies();
-    window.addEventListener("resize", generateFireflies);
-    return () => window.removeEventListener("resize", generateFireflies);
-  }, [generateFireflies]);
-
-  const getRandomPosition = useCallback(
-    (currentX: number, currentY: number): { x: number; y: number } => {
-      const maxDistance = Math.min(containerSize.width, containerSize.height) * 0.1;
-      const newX = Math.max(0, Math.min(containerSize.width, currentX + (Math.random() - 0.5) * 2 * maxDistance));
-      const newY = Math.max(0, Math.min(containerSize.height, currentY + (Math.random() - 0.5) * 2 * maxDistance));
-      return { x: newX, y: newY };
-    },
-    [containerSize]
-  );
-
-  const Firefly: React.FC<FireflyProps> = ({
-    initialX,
-    initialY,
-    delay,
-    containerWidth,
-    containerHeight,
-  }) => {
-    const fireflyRef = useRef<HTMLDivElement>(null);
-    const currentPosition = useRef({ x: initialX, y: initialY });
-
-    const animateFirefly = useCallback(() => {
-      if (!fireflyRef.current) return;
-
-      const newPosition = getRandomPosition(currentPosition.current.x, currentPosition.current.y);
-      const duration = 3000 + Math.random() * 2000;
-      const shouldFlicker = Math.random() < 0.1; // 10% chance of flickering
-
-      const keyframes = [
-        { 
-          transform: `translate(${currentPosition.current.x}px, ${currentPosition.current.y}px)`,
-          opacity: 0.7 
+  const options: ISourceOptions = useMemo(
+    () => ({
+      background: {
+        color: {
+          value: "transparent",
         },
-        ...(shouldFlicker ? [{ opacity: 0 }, { opacity: 0.7 }] : []),
-        { 
-          transform: `translate(${newPosition.x}px, ${newPosition.y}px)`,
-          opacity: 0.7
-        }
-      ];
+      },
+      fpsLimit: 120,
+      interactivity: {
+        resize: true,
+        events: {
+          onHover: {
+            enable: true,
+            mode: "repulse",
+          },
+        },
+        modes: {
+          repulse: {
+            distance: 200,
+            duration: 2,
+            factor: 100,
+            speed: 0.1,
+            maxSpeed: 50,
+            easing: "ease-out-quint",
+          } as IRepulse,
+        },
+      },
+      particles: {
+        color: {
+          value: "#BCEE6A",
+        },
+        move: {
+          direction: MoveDirection.none,
+          enable: true,
 
-      const animation = fireflyRef.current.animate(keyframes, {
-        duration,
-        easing: 'ease-in-out',
-        fill: 'forwards',
-      });
-
-      currentPosition.current = newPosition;
-
-      animation.onfinish = () => {
-        animateFirefly();
-      };
-    }, [getRandomPosition]);
-
-    useEffect(() => {
-      const timeoutId = setTimeout(() => {
-        animateFirefly();
-      }, delay);
-      return () => clearTimeout(timeoutId);
-    }, [animateFirefly, delay]);
-
-    return (
-      <div
-        ref={fireflyRef}
-        className="absolute w-1 h-1 bg-[#BCEE6A] opacity-70 after:content-[''] after:w-4 after:h-4 after:bg-[#BCEE6A] after:opacity-70 after:blur-lg after:rounded-full after:absolute after:-top-2 after:-left-2 after:z-[-1]"
-        style={{ transform: `translate(${initialX}px, ${initialY}px)` }}
-      />
-    );
+          outModes: {
+            default: OutMode.out,
+          },
+          random: true,
+          bounce: false,
+          speed: 1,
+          straight: false,
+        },
+        number: {
+          density: {
+            enable: true,
+            value_area: 800,
+          },
+          value: 200,
+        },
+        opacity: {
+          value: { min: 0.1, max: 1 },
+          animation: {
+            enable: true,
+            speed: 0.6,
+            minimumValue: 0,
+            sync: false,
+          },
+          random: true,
+        },
+        shape: {
+          type: "square",
+        },
+        size: {
+          value: 3,
+          random: true,
+          anim: {
+            enable: true,
+            speed: 2,
+            size_min: 0.1,
+            sync: false,
+          },
+        },
+      },
+      detectRetina: true,
+    }),
+    []
+  );
+  const particlesLoaded = async (container?: Container): Promise<void> => {
+    console.log(container);
   };
-
   return (
-    <div
-      ref={containerRef}
-      className="h-[30vh] pointer-events-none bg-gradient-to-t from-[#bbee6a18] to-transparent w-full fixed bottom-0 z-10"
-    >
-      {fireflies.map((firefly, index) => (
-        <Firefly
-          key={firefly.id}
-          initialX={firefly.x}
-          initialY={firefly.y}
-          delay={index * 200}
-          containerWidth={containerSize.width}
-          containerHeight={containerSize.height}
-        />
-      ))}
-    </div>
+    <Particles
+
+      id="tsparticles"
+      particlesLoaded={particlesLoaded}
+      options={options}
+    />
   );
 };
 

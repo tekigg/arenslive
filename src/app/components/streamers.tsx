@@ -22,7 +22,7 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      delayChildren: 0.3,
+      delayChildren: 0,
       staggerDirection: 1,
       when: "beforeChildren",
       from: "center",
@@ -53,13 +53,13 @@ const OfflineStreamer: React.FC<StreamerInfo> = (streamer) => {
 
   return (
     <motion.div
-      className="w-screen h-full text-white flex flex-wrap gap-8 px-6 items-center justify-center"
+      className="w-screen h-full text-white flex flex-wrap gap-8 px-6 items-center justify-center "
       ref={ref}
       initial={{ opacity: 0, y: 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{
         duration: 0.8,
-        delay: 0.5,
+        delay: 0.1,
         ease: [0, 0.71, 0.2, 1.01],
       }}
     >
@@ -143,7 +143,7 @@ const Streamers: React.FC<StreamersProps> = ({ streamers }) => {
   return (
     <>
       <motion.div
-        className="w-screen h-full text-white flex flex-wrap gap-8 items-center justify-center"
+        className="w-screen text-white flex flex-wrap gap-8 items-center justify-center"
         variants={containerVariants}
         initial="hidden"
         animate={controls}
@@ -152,7 +152,7 @@ const Streamers: React.FC<StreamersProps> = ({ streamers }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: ["circInOut"] }}
-          className="w-screen flex flex-col items-center justify-center text-white/60"
+          className="w-screen flex flex-col items-center justify-center text-white/60 mb-12"
         >
           <p>
             <span className="bg-red-500 py-1 px-2 rounded-md text-white font-bold mr-2">
@@ -243,7 +243,7 @@ const Streamers: React.FC<StreamersProps> = ({ streamers }) => {
         <motion.div
           initial="hidden"
           animate="show"
-          className="mt-28 flex flex-col gap-4"
+          className="mt-28 pb-12 flex flex-col gap-4 "
           transition={{
             staggerChildren: 0.2,
             delayChildren: 0.5,
