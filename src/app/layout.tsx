@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Pixelify_Sans } from "next/font/google";
 import type { Viewport } from "next";
+import { Analytics } from "@vercel/analytics/react"
 
 import "./globals.css";
 
