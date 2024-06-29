@@ -132,7 +132,7 @@ const Streamers: React.FC<StreamersProps> = ({ streamers }) => {
                 <div className="basis-1/4 w-full items-end flex flex-col">
                     <div className="w-full aspect-video rounded-xl bg-black overflow-hidden">
                       <iframe
-                        src={"https://player.twitch.tv/?channel=" + selectedStreamer.displayName + "&parent=localhost"}
+                        src={"https://player.twitch.tv/?channel=" + selectedStreamer.displayName + "&parent=smp.arens.live&parent=localhost&parent=arenslive.vercel.app"}
                         height="100%"
                         width="100%"
                         allowFullScreen

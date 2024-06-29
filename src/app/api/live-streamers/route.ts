@@ -34,6 +34,9 @@ export async function GET() {
 
     // Get live streams
     const streamResponse = await fetch(`https://api.twitch.tv/helix/streams?user_login=${streamers.join('&user_login=') }`, {
+      next: {
+        revalidate: 60
+      },
       headers: {
         Accept: 'application/json',
         'Client-ID': TWITCH_CLIENT_ID!,

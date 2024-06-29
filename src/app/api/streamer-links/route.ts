@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    // Parse the incoming JSON request body
     const { streamerIds } = await request.json();
 
     if (!Array.isArray(streamerIds)) {
@@ -49,11 +48,13 @@ export async function POST(request: Request) {
       });
 
       const data = await response.json();
-      const socials = data[0].data.user.channel.socialMedias.map((x: { url: string; name: string; iconSVG: string; }) => ({
+      
+      // Add null checks and provide default values
+      const socials = data[0]?.data?.user?.channel?.socialMedias?.map((x: { url: string; name: string}) => ({
         url: x.url,
         name: x.name,
-        iconSVG: x.iconSVG
-      }));
+      })) || [];
+
       return { streamerId, socials };
     }));
 
