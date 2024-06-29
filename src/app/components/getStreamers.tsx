@@ -15,8 +15,8 @@ export default function LiveStreamers() {
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["liveStreamers"],
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 2 * 60 * 1000,
+    gcTime: 2 * 60 * 1000,
     queryFn: fetchLiveStreamers,
   });
 
@@ -43,7 +43,7 @@ export default function LiveStreamers() {
   }
 
   return (
-    <div className="w-screen h-80 mt-12">
+    <div className="w-screen h-80">
       <Streamers streamers={data} />
     </div>
   );

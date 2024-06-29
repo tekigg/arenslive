@@ -16,7 +16,7 @@ const Logo: React.FC = () => {
 
   return (
     <motion.div
-    className="z-50"
+    className="z-50 fixed"
       style={{ y: springY }}
       animate={{
         y: loaded ? [0, -10, 0] : -200,
