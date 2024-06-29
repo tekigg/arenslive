@@ -12,13 +12,13 @@ function getBaseUrl() {
 export async function GET() {
   try {
     // Fetch streamers list from the JSON file
-    const streamersResponse = await fetch(`${getBaseUrl()}/assets/data/streamers.json` , { next: { revalidate: 10 } });
+    const streamersResponse = await fetch(`${getBaseUrl()}/assets/data/streamers.json` , { next: { revalidate: 10 }, headers: {Accept: 'application/json'} });
     const streamers = await streamersResponse.json();
 
     // Get OAuth token
     const tokenResponse = await fetch(`https://id.twitch.tv/oauth2/token?client_id=${TWITCH_CLIENT_ID}&client_secret=${TWITCH_CLIENT_SECRET}&grant_type=client_credentials`, {
       method: 'POST',
-
+      headers: {Accept: 'application/json'}
     });
     const tokenData = await tokenResponse.json();
     const accessToken = tokenData.access_token;
@@ -26,6 +26,7 @@ export async function GET() {
     // Get user information
     const userResponse = await fetch(`https://api.twitch.tv/helix/users?login=${streamers.join('&login=')}`, {
       headers: {
+        Accept: 'application/json',
         'Client-ID': TWITCH_CLIENT_ID!,
         'Authorization': `Bearer ${accessToken}`
       }
@@ -35,6 +36,7 @@ export async function GET() {
     // Get live streams
     const streamResponse = await fetch(`https://api.twitch.tv/helix/streams?user_login=${streamers.join('&user_login=') }`, {
       headers: {
+        Accept: 'application/json',
         'Client-ID': TWITCH_CLIENT_ID!,
         'Authorization': `Bearer ${accessToken}`
       }
@@ -54,7 +56,7 @@ export async function GET() {
 
     return NextResponse.json(streamerInfo);
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error:', error, "debug info:", { TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET }, getBaseUrl());
     return NextResponse.json({ error: 'An error occurred while fetching streamer information' }, { status: 500 });
   }
 }
